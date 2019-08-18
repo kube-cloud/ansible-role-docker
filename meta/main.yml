@@ -24,7 +24,7 @@ galaxy_info:
         - linux
         - build
         - docker
-        - docker-engine
-        - docker-compose
+        - engine
+        - compose
 
 dependencies: []
