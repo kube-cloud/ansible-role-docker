@@ -1,0 +1,13 @@
+---
+
+# Start Docker handler
+- name: start_docker
+  service:
+   name: docker
+   state: started
+
+# Restart Docker handler
+- name: restart_docker
+  service:
+   name: docker
+   state: restarted

@@ -1,0 +1,10 @@
+---
+
+# Test vars CE Ubuntu
+os_architecture: "amd64"
+install_community: true
+docker_version: "5:19.03.1~3-0~ubuntu-xenial"
+authorized_users:
+ - jetune
+ - hmefoo
+ - ltchatchouang

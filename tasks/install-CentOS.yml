@@ -1,0 +1,50 @@
+---
+
+- name: ({{ os_with_version }}) Role Installs for Community Edition
+  block:
+
+   - name: ({{ os_with_version }}) Packages Cleaning for CentOS
+     yum:
+      name: "{{ docker_deleted_packages }}"
+      state: absent
+     changed_when: false
+     failed_when: false
+     check_mode: false
+
+   - name: ({{ os_with_version }}) Packages Install - Prerequisites
+     yum:
+      name: "{{ docker_required_packages }}"
+      state: present
+
+   - name: ({{ os_with_version }}) Packages repository Install - Docker
+     command: >
+      yum-config-manager --add-repo={{ docker_repository_file }} && \
+      yum-config-manager --enable docker-ce-nightly && \
+      yum-config-manager --enable docker-ce-test
+     args:
+      creates: /etc/yum.repos.d/docker-ce.repo
+
+   - name: ({{ os_with_version }}) Packages Install - Docker
+     yum:
+      name: "{{ docker_packages }}"
+      state: present
+     register: docker_install_result
+     changed_when: docker_install_result.changes.installed|length == docker_packages|length
+
+   - name: ({{ os_with_version }}) Authorize Users - Docker
+     user:
+      name: "{{ item }}"
+      group: "docker"
+     with_items: "{{ docker_authorized_users }}"
+
+   - name: ({{ os_with_version }}) Service configuration - Docker
+     service:
+      name: "docker"
+      enabled: true
+      state: started
+     changed_when: false
+     failed_when: false
+     check_mode: false
+
+  when:
+   - community_edition|bool
