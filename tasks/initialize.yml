@@ -2,12 +2,12 @@
 
 - name: ({{ ansible_distribution }}) Define Commons facts
   set_fact:
-   community_edition: "{{ install_community | default(true) }}"
+   community_edition: "{{ docker_install_community }}"
    os_with_version: "{{ ansible_distribution }} {{ ansible_distribution_major_version }}"
    os_family: "{{ ansible_os_family }}"
    os_major_release: "{{ ansible_distribution_major_version }}"
    os_release: "{{ ansible_distribution_version }}"
-   os_arch: "{{ (os_architecture | default(ansible_architecture)) | replace('amd64', 'x86_64') }}"
+   os_arch: "{{ docker_os_architecture }}"
    os_distribution: "{{ ansible_distribution }}"
    os_codename: "{{ ansible_distribution_release }}"
    uname: "{{ ansible_system }}"
@@ -38,9 +38,6 @@
 - name: ({{ os_with_version }}) Define Docker Commons fact
   set_fact:
    docker_already_installed: "{{ docker_version_res.rc == 0 }}"
-   docker_authorized_users: "{{ authorized_users | default(['']) }}"
-   docker_install_compose: "{{ install_compose | default(true) }}"
-   docker_compose_version: "{{ compose_version | default('1.24.1') }}"
 
 - name: ({{ os_with_version }}) Extract current installed Docker version
   set_fact:
@@ -50,17 +47,6 @@
    docker_installed_version_patch: "{{ docker_version_res.stdout_lines[0].split(' ')[2].split('.')[2] }}"
   when:
    - docker_already_installed|bool
-
-- name: ({{ os_with_version }}) Define Docker Compose facts
-  set_fact:
-   docker_compose_url: "{{ compose_url | default('https://github.com/docker/compose/releases/download/' \
-   + docker_compose_version \
-   + '/docker-compose-' \
-   + uname \
-   + '-' \
-   + os_arch) }}"
-   docker_compose_checksum: "{{ compose_checksum | \
-   default('sha256:cfb3439956216b1248308141f7193776fcf4b9c9b49cbbe2fb07885678e2bb8a') }}"
 
 - name: ({{ os_with_version }}) Role checks for Enterprise Edition
   block:
