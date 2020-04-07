@@ -21,3 +21,29 @@ docker_compose_url: "{{ 'https://github.com/docker/compose/releases/download/'\
 
 # Docker compose checksum
 docker_compose_checksum: "sha256:cfb3439956216b1248308141f7193776fcf4b9c9b49cbbe2fb07885678e2bb8a"
+
+# Default docker datadir
+docker_default_data_dir: "/val/lib/docker"
+
+# Docker data directory
+docker_data_dir: "{{ docker_default_data_dir }}"
+
+# Docker Host adress
+docker_host: "fd://"
+
+# Docker extras options
+docker_extras_options: []
+# - "--authorization-plugin list"
+# - "--add-runtime runtime"
+# - "--allow-nondistributable-artifacts list"
+# - "--icc"
+# - "--log-level string"
+# - "--pidfile string"
+# - "--registry-mirror list"
+# - "--storage-driver string"
+# - "--tls"
+# - "--tlscacert string"
+# - "--tlscert string"
+# - "--tlskey string"
+# - "--tlsverify"
+# - "..."

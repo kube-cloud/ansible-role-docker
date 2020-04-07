@@ -10,6 +10,7 @@
    os_arch: "{{ docker_os_architecture }}"
    os_distribution: "{{ ansible_distribution }}"
    os_codename: "{{ ansible_distribution_release }}"
+   docker_data_dir_override: "{{ docker_data_dir != docker_default_data_dir }}"
    uname: "{{ ansible_system }}"
 
 - name: ({{ os_with_version }}) Check OS Requirement
@@ -85,6 +86,7 @@
       default('https://download.docker.com/linux/ubuntu') }}"
       docker_packages: "{{ packages | default(['docker-ce' + docker_version_suffix, \
       'docker-ce-cli' + docker_version_suffix, 'containerd.io']) }}"
+      docker_service_file: "/etc/systemd/system/docker.service"
      when:
       - ansible_distribution == "Ubuntu"
 
@@ -100,10 +102,21 @@
       default('https://download.docker.com/linux/centos/docker-ce.repo') }}"
       docker_packages: "{{ packages | default(['docker-ce' + docker_version_suffix, \
       'docker-ce-cli' + docker_version_suffix, 'containerd.io']) }}"
+      docker_service_file: "/usr/lib/systemd/system/docker.service"
      when:
       - ansible_distribution == "CentOS"
 
   when: community_edition|bool
+
+- name: ({{ os_with_version }}) Ensure docker data dir is created
+  file:
+   path: "{{ docker_data_dir }}"
+   state: directory
+   mode: u+rwx,g+rx,o+rx
+  when:
+   - docker_data_dir != docker_default_data_dir
+  tags:
+   - molecule-idempotence-notest
 
 - name: ({{ os_with_version }}) Installation Initialized facts [Recap]
   debug:
@@ -133,3 +146,7 @@
     - "Docker Compose Version       : {{ docker_compose_version }}"
     - "Docker Compose URL           : {{ docker_compose_url }}"
     - "Docker Compose Checksum      : {{ docker_compose_checksum }}"
+    - "-----------------------------"
+    - "-----------------------------"
+    - "Docker Data Dir              : {{ docker_data_dir }}"
+    - "Docker Default Data Dir      : {{ docker_default_data_dir }}"

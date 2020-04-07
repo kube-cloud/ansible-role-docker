@@ -27,3 +27,16 @@ docker_compose_url: "{{ 'https://github.com/docker/compose/releases/download/'\
 
 # Docker compose checksum
 docker_compose_checksum: "sha256:cfb3439956216b1248308141f7193776fcf4b9c9b49cbbe2fb07885678e2bb8a"
+
+# Docker datas
+docker_data_dir: "/kis/docker/datas"
+
+# Docker Host adress
+docker_host: "fd://"
+
+# Extras Options
+docker_extras_options:
+ - "--log-level debug"
+ - "--label TEST=true"
+ - "--icc"
+ - "--registry-mirror https://images.lab.kube-cloud.be"
