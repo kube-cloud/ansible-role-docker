@@ -11,6 +11,10 @@
    - name: Include Install tasks for ({{ ansible_distribution }})
      include_tasks: "install-{{ ansible_distribution }}.yml"
 
+   # Flush Handlers
+   - name: Force all notified handlers to run
+     meta: flush_handlers
+
    # Include Install Compose tasks (Linux)
    - name: Include Install Compose tasks for ({{ ansible_distribution }})
      include_tasks: "install-compose.yml"
