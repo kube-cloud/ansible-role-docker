@@ -6,8 +6,8 @@ driver:
 lint: |
     yamllint .
 platforms:
-    - name: ${MOLECULE_DISTRO:-ubuntu16}
-      image: "kubecloudsas/docker-ansible-test:${MOLECULE_DISTRO:-ubuntu16}"
+    - name: ${MOLECULE_DISTRO:-centos7}
+      image: "kubecloudsas/docker-ansible-test:${MOLECULE_DISTRO:-centos7}"
       command: ${MOLECULE_DOCKER_COMMAND:-""}
       volumes:
           - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -34,7 +34,6 @@ scenario:
         - create
         - prepare
         - converge
-        - idempotence
         - side_effect
         - verify
         - cleanup

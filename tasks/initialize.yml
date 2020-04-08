@@ -112,9 +112,9 @@
   file:
    path: "{{ docker_data_dir }}"
    state: directory
-   mode: u+rwx,g+rx,o+rx
+   mode: u+rwx,g+x,o+x
   when:
-   - docker_data_dir != docker_default_data_dir
+   - docker_data_dir_override|bool
   tags:
    - molecule-idempotence-notest
 
