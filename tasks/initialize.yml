@@ -11,6 +11,8 @@
    os_distribution: "{{ ansible_distribution }}"
    os_codename: "{{ ansible_distribution_release }}"
    docker_data_dir_override: "{{ docker_data_dir != docker_default_data_dir }}"
+   docker_customization_script_dest_path: "/tmp/customization.sh"
+   docker_swarm_portainer_stack_dest_path: "/tmp/portainer-stack.yml"
    uname: "{{ ansible_system }}"
 
 - name: ({{ os_with_version }}) Check OS Requirement
@@ -103,8 +105,6 @@
       docker_packages: "{{ packages | default(['docker-ce' + docker_version_suffix, \
       'docker-ce-cli' + docker_version_suffix, 'containerd.io']) }}"
       docker_service_file: "/usr/lib/systemd/system/docker.service"
-      docker_customization_script_dest_path: "/tmp/customization.sh"
-      docker_swarm_portainer_stack_dest_path: "/tmp/portainer-stack.yml"
      when:
       - ansible_distribution == "CentOS"
 
