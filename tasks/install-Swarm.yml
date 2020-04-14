@@ -1,0 +1,44 @@
+---
+
+- name: "({{ os_with_version }}) Check swarm node initialized"
+  shell:
+   cmd: "docker node ls"
+  register: swarm_status
+  ignore_errors: true
+  run_once: true
+
+- name: "({{ os_with_version }}) Initialize cluster if required"
+  shell:
+   cmd: |
+    docker swarm init \
+    --advertise-addr {{ docker_swarm_advertise_ip }}:{{ docker_swarm_advertise_port }} \
+    --listen-addr {{ docker_swarm_listen_ip }} \
+    {{ docker_swarm_extras_options | join(' ') }}
+  when:
+   - swarm_status.rc != 0
+   - docker_swarm_master|bool
+   - docker_swarm_master_join_token | length == 0
+
+- name: "({{ os_with_version }}) Join an existing cluster (as a master role) if required"
+  shell:
+   cmd: |
+    docker swarm join \
+    --token {{ docker_swarm_master_join_token }} \
+    --listen-addr {{ docker_swarm_listen_ip }} \
+    {{ docker_swarm_extras_options | join(' ') }} \
+    {{ docker_swarm_advertise_ip }}:{{ docker_swarm_advertise_port }}
+  when:
+   - docker_swarm_master|bool
+   - docker_swarm_master_join_token | length > 0
+
+- name: "({{ os_with_version }}) Join an existing cluster (as a worker role) if required"
+  shell:
+   cmd: |
+    docker swarm join \
+    --token {{ docker_swarm_worker_join_token }} \
+    --listen-addr {{ docker_swarm_listen_ip }} \
+    {{ docker_swarm_extras_options | join(' ') }} \
+    {{ docker_swarm_advertise_ip }}:{{ docker_swarm_advertise_port }}
+  when:
+   - not docker_swarm_master|bool
+   - docker_swarm_worker_join_token | length > 0

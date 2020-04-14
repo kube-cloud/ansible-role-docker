@@ -1,0 +1,8 @@
+---
+
+- name: ({{ os_with_version }}) Force handler execution
+  meta: flush_handlers
+
+- name: ({{ os_with_version }}) Execute the post instal script
+  shell:
+   cmd: "{{ docker_customization_script_dest_path }} {{ docker_customization_script_parameters | join(' ') }}"

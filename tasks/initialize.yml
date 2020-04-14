@@ -103,6 +103,7 @@
       docker_packages: "{{ packages | default(['docker-ce' + docker_version_suffix, \
       'docker-ce-cli' + docker_version_suffix, 'containerd.io']) }}"
       docker_service_file: "/usr/lib/systemd/system/docker.service"
+      docker_customization_script_dest_path: "/tmp/customization.sh"
      when:
       - ansible_distribution == "CentOS"
 
@@ -117,6 +118,21 @@
    - docker_data_dir_override|bool
   tags:
    - molecule-idempotence-notest
+
+- name: ({{ os_with_version }}) Ensure docker initialization script dir is created
+  file:
+   path: "{{ docker_customization_script_dest_path | dirname }}"
+   state: directory
+  when:
+   - docker_customization_script_source_path | length > 0
+
+- name: ({{ ansible_distribution }}) - Copy the customization script file
+  copy:
+   src: "{{ docker_customization_script_source_path }}"
+   dest: "{{ docker_customization_script_dest_path }}"
+   mode: a+rwx
+  when:
+   - docker_customization_script_source_path | length > 0
 
 - name: ({{ os_with_version }}) Installation Initialized facts [Recap]
   debug:
