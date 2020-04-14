@@ -42,3 +42,25 @@
   when:
    - not docker_swarm_master|bool
    - docker_swarm_worker_join_token | length > 0
+
+- name: "({{ os_with_version }}) Ensure portainer service stack base dir exists for the initializer master"
+  file:
+   path: "{{ docker_swarm_portainer_stack_dest_path | dirname }}"
+   state: directory
+  when:
+   - docker_swarm_portainer_enabled|bool
+
+# Generate portainer service stack if needed
+- name: "({{ os_with_version }}) Generate portainer service stack if needed for the initializer master"
+  template:
+   dest: "{{ docker_swarm_portainer_stack_dest_path }}"
+   src: "portainer-agent-stack.yml.j2"
+  when:
+   - docker_swarm_portainer_enabled|bool
+
+- name: "({{ os_with_version }}) Deploy portainer service stack if needed for the initializer master"
+  shell:
+   cmd: |
+    docker stack deploy --compose-file={{ docker_swarm_portainer_stack_dest_path }} portainer
+  when:
+   - docker_swarm_portainer_enabled|bool

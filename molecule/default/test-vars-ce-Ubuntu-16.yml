@@ -55,10 +55,10 @@ docker_customization_script_parameters:
 docker_customization_script_dest_path: "/tmp/customization.sh"
 
 # Is docker swarm enabled ?
-docker_swarm_enabled: false
+docker_swarm_enabled: true
 
 # Is host docker swarm master ?
-docker_swarm_master: false
+docker_swarm_master: true
 
 # Docker swarm master join token
 docker_swarm_master_join_token: ""
@@ -87,3 +87,12 @@ docker_swarm_extras_options:
  - "--data-path-addr 127.0.0.1"
  - "--data-path-port 4789"
  - "--cert-expiry 2160h0m0s"
+
+# Install Portainer service stack
+docker_swarm_portainer_enabled: true
+
+# Portainer agent port
+docker_swarm_portainer_agent_port: 9001
+
+# Portainer agent port
+docker_swarm_portainer_port: 9000

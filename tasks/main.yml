@@ -19,17 +19,17 @@
    - name: Include Install Compose tasks for ({{ ansible_distribution }})
      include_tasks: "install-Compose.yml"
 
+   # Include Docker Engine Post Install tasks (Linux)
+   - name: Include Post Install tasks for ({{ ansible_distribution }})
+     include_tasks: "docker-Engine-Post-Install.yml"
+     when:
+      - docker_customization_script_source_path | length > 0
+
    # Include Install Swarm tasks (Linux)
    - name: Include Install Swarm tasks for ({{ ansible_distribution }})
      include_tasks: "install-Swarm.yml"
      when:
       - docker_swarm_enabled | bool
-
-   # Include Post Install tasks (Linux)
-   - name: Include Post Install tasks for ({{ ansible_distribution }})
-     include_tasks: "post-Install.yml"
-     when:
-      - docker_customization_script_source_path | length > 0
 
   when:
    - ansible_os_family == "RedHat" or ansible_os_family == "Debian"

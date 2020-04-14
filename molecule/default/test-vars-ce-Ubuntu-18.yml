@@ -87,3 +87,12 @@ docker_swarm_extras_options:
  - "--data-path-addr 127.0.0.1"
  - "--data-path-port 4789"
  - "--cert-expiry 2160h0m0s"
+
+# Install Portainer service stack
+docker_swarm_portainer_enabled: true
+
+# Portainer agent port
+docker_swarm_portainer_agent_port: 9001
+
+# Portainer agent port
+docker_swarm_portainer_port: 9000

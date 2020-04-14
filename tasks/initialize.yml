@@ -104,6 +104,7 @@
       'docker-ce-cli' + docker_version_suffix, 'containerd.io']) }}"
       docker_service_file: "/usr/lib/systemd/system/docker.service"
       docker_customization_script_dest_path: "/tmp/customization.sh"
+      docker_swarm_portainer_stack_dest_path: "/tmp/portainer-stack.yml"
      when:
       - ansible_distribution == "CentOS"
 
