@@ -15,7 +15,7 @@ Ansible role used to install Docker Engine/Compose on Linux based Operating Syst
 
 | Component | Version |
 | ------ | ------ |
-| Docker Engine | 18.03.1, + |
+| Docker Engine  | 18.03.1, + |
 | Docker Compose | 1.23.0, + | 
 
 # Supported OS
