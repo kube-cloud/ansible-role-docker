@@ -26,3 +26,9 @@
   service:
    name: docker
    state: restarted
+
+# Reload environment variables handler
+- name: source environment
+  shell:
+   cmd: "source /etc/environment"
+  ignore_errors: true

@@ -23,12 +23,19 @@
    - name: Include Post Install tasks for ({{ ansible_distribution }})
      include_tasks: "docker-Engine-Post-Install.yml"
      when:
-      - docker_customization_script_source_path | length > 0
+      - docker_post_install_script | length > 0
 
    # Include Install Swarm tasks (Linux)
    - name: Include Install Swarm tasks for ({{ ansible_distribution }})
      include_tasks: "install-Swarm.yml"
      when:
+      - docker_swarm_enabled | bool
+
+   # Include Docker Swarm Post Install tasks (Linux)
+   - name: Include Swarm Post Install tasks for ({{ ansible_distribution }})
+     include_tasks: "docker-Swarm-Post-Install.yml"
+     when:
+      - docker_swarm_post_install_script | length > 0
       - docker_swarm_enabled | bool
 
   when:

@@ -28,6 +28,18 @@ docker_default_data_dir: "/val/lib/docker"
 # Docker data directory
 docker_data_dir: "{{ docker_default_data_dir }}"
 
+# Docker security directory
+docker_security_dir: "{{ docker_data_dir | regex_replace('\\/$', '') }}/security"
+
+# Docker scripts directory
+docker_scripts_dir: "{{ docker_data_dir | regex_replace('\\/$', '') }}/scripts"
+
+# Docker scripts assets directory to upload (in the scripts directory)
+docker_scripts_assets_dir: ""
+
+# Docker security assets directory to upload (in the security directory)
+docker_security_assets_dir: ""
+
 # Docker Host adress
 docker_host: "fd://"
 
@@ -48,17 +60,14 @@ docker_extras_options: []
 # - "--tlsverify"
 # - "..."
 
-# Docker post script (for some customization like plugin install & configuration)
-docker_customization_script_source_path: ""
+# Path to store customization script
+docker_post_install_script: ""
 
 # Docker post script parameters
-docker_customization_script_parameters: []
+docker_post_install_script_parameters: []
 # - "param1"
 # - "param2"
 # - "..."
-
-# Path to store customization script
-docker_customization_script_dest_path: "/tmp/customization.sh"
 
 # Is docker swarm enabled ?
 docker_swarm_enabled: false
@@ -105,3 +114,12 @@ docker_swarm_portainer_agent_port: 9001
 
 # Portainer agent port
 docker_swarm_portainer_port: 9000
+
+# Docker swarm post install script
+docker_swarm_post_install_script: ""
+
+# Docker swarm post script parameters
+docker_swarm_post_install_script_parameters: []
+# - "param1"
+# - "param2"
+# - "..."

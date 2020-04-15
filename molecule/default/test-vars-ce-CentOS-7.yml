@@ -13,7 +13,7 @@ docker_os_architecture: "{{ ansible_architecture | replace('amd64', 'x86_64') }}
 docker_authorized_users:
  - jetune
  - hmefoo
- - ltchatchouang
+ - ltchatch
 
 # Install compose
 docker_install_compose: true
@@ -28,8 +28,20 @@ docker_compose_url: "{{ 'https://github.com/docker/compose/releases/download/'\
 # Docker compose checksum
 docker_compose_checksum: "sha256:cfb3439956216b1248308141f7193776fcf4b9c9b49cbbe2fb07885678e2bb8a"
 
-# Docker datas
+# Docker internal datas directory
 docker_data_dir: "/kis/docker/datas"
+
+# Docker internal security directory
+docker_security_dir: "{{ docker_data_dir }}/security"
+
+# Docker internal scripts directory
+docker_scripts_dir: "{{ docker_data_dir }}/scripts"
+
+# Docker scripts assets to upload (in the scripts directory)
+docker_scripts_assets_dir: "scripts"
+
+# Docker security assets to upload (in the security directory)
+docker_security_assets_dir: "security"
 
 # Docker Host adress
 docker_host: "fd://"
@@ -42,17 +54,15 @@ docker_extras_options:
  - "--registry-mirror https://images.lab.kube-cloud.be"
 
 # Docker role post script (for some initialization like plugin install & configuration)
-docker_customization_script_source_path: "scripts/post-install.sh"
+# This file will be find in the scripts dir "{{ docker_scripts_dir }}"
+docker_post_install_script: "post-install.sh"
 
 # Docker post script parameters
-docker_customization_script_parameters:
+docker_post_install_script_parameters:
  - "param1"
  - "param2"
  - "param3"
  - "param4"
-
-# Path to store customization script
-docker_customization_script_dest_path: "/tmp/customization.sh"
 
 # Is docker swarm enabled ?
 docker_swarm_enabled: true
@@ -96,3 +106,11 @@ docker_swarm_portainer_agent_port: 9001
 
 # Portainer agent port
 docker_swarm_portainer_port: 9000
+
+# Docker swarm post install script
+docker_swarm_post_install_script: "swarm-post-install.sh"
+
+# Docker swarm post script parameters
+docker_swarm_post_install_script_parameters:
+ - "param1"
+ - "param2"

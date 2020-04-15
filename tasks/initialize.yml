@@ -11,8 +11,16 @@
    os_distribution: "{{ ansible_distribution }}"
    os_codename: "{{ ansible_distribution_release }}"
    docker_data_dir_override: "{{ docker_data_dir != docker_default_data_dir }}"
-   docker_customization_script_dest_path: "/tmp/customization.sh"
    docker_swarm_portainer_stack_dest_path: "/tmp/portainer-stack.yml"
+   _docker_default_data_dir: "{{ docker_default_data_dir | regex_replace('\\/$', '') }}"
+   _docker_data_dir: "{{ docker_data_dir | regex_replace('\\/$', '') }}"
+   _docker_security_dir: "{{ docker_security_dir | regex_replace('\\/$', '') }}"
+   _docker_scripts_dir: "{{ docker_scripts_dir | regex_replace('\\/$', '') }}"
+   _docker_post_install_script: "{{ docker_post_install_script | regex_replace('^\\/', '') }}"
+   _docker_swarm_post_install_script: "{{ docker_swarm_post_install_script | regex_replace('^\\/', '') }}"
+   _docker_scripts_assets_dir: "{{ docker_scripts_assets_dir | regex_replace('^\\/', '') }}"
+   _docker_security_assets_dir: "{{ docker_security_assets_dir | regex_replace('^\\/', '') }}"
+
    uname: "{{ ansible_system }}"
 
 - name: ({{ os_with_version }}) Check OS Requirement
@@ -110,30 +118,54 @@
 
   when: community_edition|bool
 
-- name: ({{ os_with_version }}) Ensure docker data dir is created
+- name: ({{ os_with_version }}) Ensure docker (data/scripts/security assets) directories are created
   file:
-   path: "{{ docker_data_dir }}"
+   path: "{{ item.path }}"
    state: directory
-   mode: u+rwx,g+x,o+x
+   mode: "{{ item.mode | default('u+rwx,g+x,o+x') }}"
   when:
    - docker_data_dir_override|bool
   tags:
    - molecule-idempotence-notest
+  loop:
+   - path: "{{ docker_data_dir }}"
+   - path: "{{ docker_security_dir }}"
+   - path: "{{ docker_scripts_dir }}"
 
-- name: ({{ os_with_version }}) Ensure docker initialization script dir is created
-  file:
-   path: "{{ docker_customization_script_dest_path | dirname }}"
-   state: directory
-  when:
-   - docker_customization_script_source_path | length > 0
-
-- name: ({{ ansible_distribution }}) - Copy the customization script file
+- name: ({{ ansible_distribution }}) - Copy the scripts assets in scripts base dir ({{ docker_scripts_dir }})
   copy:
-   src: "{{ docker_customization_script_source_path }}"
-   dest: "{{ docker_customization_script_dest_path }}"
+   src: "{{ item }}"
+   dest: "{{ docker_scripts_dir | regex_replace('\\/$', '') }}/"
    mode: a+rwx
+  loop: "{{ lookup('fileglob', _docker_scripts_assets_dir + '/*', wantlist=true) }}"
   when:
-   - docker_customization_script_source_path | length > 0
+   - _docker_scripts_assets_dir | length > 0
+
+- name: ({{ ansible_distribution }}) - Copy the security assets in security base dir ({{ docker_security_dir }})
+  copy:
+   src: "{{ item }}"
+   dest: "{{ docker_security_dir | regex_replace('\\/$', '') }}/"
+   mode: a+rx
+  loop: "{{ lookup('fileglob', _docker_security_assets_dir + '/*', wantlist=true) }}"
+  when:
+   - _docker_security_assets_dir | length > 0
+
+- name: ({{ ansible_distribution }}) - Ensure main environment variables are defined
+  lineinfile:
+   dest: "/etc/environment"
+   create: true
+   regexp: "^{{ item.key }}=.*$"
+   line: "{{ item.key }}={{ item.value }}"
+   state: present
+  loop:
+   - key: "DOCKER_DATA_DIR"
+     value: "{{ _docker_data_dir }}"
+   - key: "DOCKER_SCRIPTS_ASSETS_DIR"
+     value: "{{ _docker_scripts_dir }}"
+   - key: "DOCKER_SECURITY_ASSETS_DIR"
+     value: "{{ _docker_security_dir }}"
+  notify:
+   - source environment
 
 - name: ({{ os_with_version }}) Installation Initialized facts [Recap]
   debug:
