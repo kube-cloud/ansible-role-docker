@@ -164,8 +164,6 @@
      value: "{{ _docker_scripts_dir }}"
    - key: "DOCKER_SECURITY_ASSETS_DIR"
      value: "{{ _docker_security_dir }}"
-  notify:
-   - source environment
 
 - name: ({{ os_with_version }}) Installation Initialized facts [Recap]
   debug:
