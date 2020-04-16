@@ -43,8 +43,12 @@ docker_scripts_assets_dir: "scripts"
 # Docker security assets to upload (in the security directory)
 docker_security_assets_dir: "security"
 
-# Docker Host adress
-docker_host: "fd://"
+# Docker Host adrdesses
+docker_hosts:
+ - "0.0.0.0:2373"
+ - "0.0.0.0:2374"
+ - "0.0.0.0:2375"
+ - "0.0.0.0:2376"
 
 # Extras Options
 docker_extras_options:
