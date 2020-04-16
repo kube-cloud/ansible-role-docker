@@ -12,7 +12,6 @@
    cmd: |
     docker swarm init \
     --advertise-addr {{ docker_swarm_advertise_ip }}:{{ docker_swarm_advertise_port }} \
-    --listen-addr {{ docker_swarm_listen_ip }}:{{ docker_swarm_listen_port }} \
     {{ docker_swarm_extras_options | join(' ') }}
   when:
    - swarm_status.rc != 0
@@ -24,7 +23,6 @@
    cmd: |
     docker swarm join \
     --token {{ docker_swarm_master_join_token }} \
-    --listen-addr {{ docker_swarm_listen_ip }}:{{ docker_swarm_listen_port }} \
     {{ docker_swarm_extras_options | join(' ') }} \
     {{ docker_swarm_advertise_ip }}:{{ docker_swarm_advertise_port }}
   when:
@@ -36,7 +34,6 @@
    cmd: |
     docker swarm join \
     --token {{ docker_swarm_worker_join_token }} \
-    --listen-addr {{ docker_swarm_listen_ip }}:{{ docker_swarm_listen_port }} \
     {{ docker_swarm_extras_options | join(' ') }} \
     {{ docker_swarm_advertise_ip }}:{{ docker_swarm_advertise_port }}
   when:

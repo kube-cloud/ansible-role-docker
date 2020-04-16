@@ -83,9 +83,6 @@ docker_swarm_advertise_ip: "127.0.0.1"
 # Docker swarm master advertise port
 docker_swarm_advertise_port: 2377
 
-# Docker swarm master listen IP
-docker_swarm_listen_ip: "0.0.0.0"
-
 # Docker swarm worker join token
 docker_swarm_worker_join_token: ""
 
@@ -101,6 +98,7 @@ docker_swarm_extras_options:
  - "--data-path-addr 127.0.0.1"
  - "--data-path-port 4789"
  - "--cert-expiry 2160h0m0s"
+ - "--listen-addr 0.0.0.0:2276"
 
 # Install Portainer service stack
 docker_swarm_portainer_enabled: true
