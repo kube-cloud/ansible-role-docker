@@ -1,6 +1,6 @@
 ---
 
-- name: ({{ ansible_distribution }}) Define Commons facts
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Define Commons facts"
   set_fact:
    community_edition: "{{ docker_install_community }}"
    os_with_version: "{{ ansible_distribution }} {{ ansible_distribution_major_version }}"
@@ -11,26 +11,24 @@
    os_distribution: "{{ ansible_distribution }}"
    os_codename: "{{ ansible_distribution_release }}"
    docker_data_dir_override: "{{ docker_data_dir != docker_default_data_dir }}"
-   docker_swarm_portainer_stack_dest_path: "/tmp/portainer-stack.yml"
    _docker_default_data_dir: "{{ docker_default_data_dir | regex_replace('\\/$', '') }}"
    _docker_data_dir: "{{ docker_data_dir | regex_replace('\\/$', '') }}"
    _docker_security_dir: "{{ docker_security_dir | regex_replace('\\/$', '') }}"
    _docker_scripts_dir: "{{ docker_scripts_dir | regex_replace('\\/$', '') }}"
    _docker_post_install_script: "{{ docker_post_install_script | regex_replace('^\\/', '') }}"
-   _docker_swarm_post_install_script: "{{ docker_swarm_post_install_script | regex_replace('^\\/', '') }}"
    _docker_scripts_assets_dir: "{{ docker_scripts_assets_dir | regex_replace('^\\/', '') }}"
    _docker_security_assets_dir: "{{ docker_security_assets_dir | regex_replace('^\\/', '') }}"
 
    uname: "{{ ansible_system }}"
 
-- name: ({{ os_with_version }}) Check OS Requirement
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Check OS Requirement"
   fail:
    msg: "CentOS 6 n'est pas supporté par docker"
   when:
    - ansible_distribution == "CentOS"
    - ansible_distribution_major_version == 6
 
-- name: ({{ os_with_version }}) Check current Docker version.
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Check current Docker version."
   command: >
     docker --version
   changed_when: false
@@ -38,7 +36,7 @@
   check_mode: false
   register: docker_version_res
 
-- name: ({{ os_with_version }}) Check Compose Requirement
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Check Compose Requirements"
   fail:
    msg: "Veuillez renseigner la version de docker compose à installer"
   when:
@@ -46,11 +44,11 @@
    - install_compose
    - (compose_version is not defined) or (compose_version|trim|length == 0)
 
-- name: ({{ os_with_version }}) Define Docker Commons fact
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Define Docker Commons fact"
   set_fact:
    docker_already_installed: "{{ docker_version_res.rc == 0 }}"
 
-- name: ({{ os_with_version }}) Extract current installed Docker version
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Extract current installed Docker version"
   set_fact:
    docker_installed_version: "{{ docker_version_res.stdout_lines[0].split(' ')[2] }}"
    docker_installed_version_major: "{{ docker_version_res.stdout_lines[0].split(' ')[2].split('.')[0] }}"
@@ -59,7 +57,7 @@
   when:
    - docker_already_installed|bool
 
-- name: ({{ os_with_version }}) Role checks for Enterprise Edition
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Role checks for Enterprise Edition"
   block:
 
    - name: ({{ os_with_version }}) Check Docker EE URL (Fail if not defined)
@@ -70,21 +68,21 @@
 
   when: not community_edition|bool
 
-- name: ({{ os_with_version }}) Role initialisations for Community Edition
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Role initialisations for Community Edition"
   block:
 
-   - name: ({{ os_with_version }}) Docker version suffix facts for Ubuntu
+   - name: "({{ ansible_distribution }}) DOCKER::Initialize - Docker version suffix facts for Ubuntu"
      set_fact:
       docker_version_separator: "{{ '=' if (ansible_distribution == 'Ubuntu') \
       else '-' if (ansible_distribution == 'CentOS') \
       else '' }}"
 
-   - name: ({{ os_with_version }}) Docker version suffix facts for Ubuntu
+   - name: "({{ ansible_distribution }}) DOCKER::Initialize - Docker version suffix facts for Ubuntu"
      set_fact:
       docker_version_suffix: "{{ docker_version_separator + docker_version \
       if (docker_version is defined and docker_version|trim|length > 0) else '' }}"
 
-   - name: ({{ os_with_version }}) Packages facts for Ubuntu
+   - name: "({{ ansible_distribution }}) DOCKER::Initialize - Packages facts for Ubuntu"
      set_fact:
       docker_required_packages: "{{ required_packages | default(['apt-transport-https', 'curl', \
       'ca-certificates', 'gnupg-agent', 'software-properties-common']) }}"
@@ -100,7 +98,7 @@
      when:
       - ansible_distribution == "Ubuntu"
 
-   - name: ({{ os_with_version }}) Packages facts for CentOS (7+)
+   - name: "({{ ansible_distribution }}) DOCKER::Initialize - Packages facts for CentOS (7+)"
      set_fact:
       docker_required_packages: "{{ required_packages | default(['yum-utils', 'lvm2', \
       'device-mapper-persistent-data']) }}"
@@ -118,7 +116,7 @@
 
   when: community_edition|bool
 
-- name: ({{ os_with_version }}) Ensure docker (data/scripts/security assets) directories are created
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Ensure docker directories are created"
   file:
    path: "{{ item.path }}"
    state: directory
@@ -132,7 +130,7 @@
    - path: "{{ docker_security_dir }}"
    - path: "{{ docker_scripts_dir }}"
 
-- name: ({{ ansible_distribution }}) - Copy the scripts assets in scripts base dir ({{ docker_scripts_dir }})
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Copy the scripts ({{ docker_scripts_dir }})"
   copy:
    src: "{{ item }}"
    dest: "{{ docker_scripts_dir | regex_replace('\\/$', '') }}/"
@@ -141,7 +139,7 @@
   when:
    - _docker_scripts_assets_dir | length > 0
 
-- name: ({{ ansible_distribution }}) - Copy the security assets in security base dir ({{ docker_security_dir }})
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Copy the security assets in ({{ docker_security_dir }})"
   copy:
    src: "{{ item }}"
    dest: "{{ docker_security_dir | regex_replace('\\/$', '') }}/"
@@ -150,7 +148,7 @@
   when:
    - _docker_security_assets_dir | length > 0
 
-- name: ({{ ansible_distribution }}) - Ensure main environment variables are defined
+- name: "({{ ansible_distribution }}) DOCKER::Initialize - Ensure main environment variables are defined"
   lineinfile:
    dest: "/etc/environment"
    create: true
@@ -165,7 +163,7 @@
    - key: "DOCKER_SECURITY_ASSETS_DIR"
      value: "{{ _docker_security_dir }}"
 
-- name: ({{ os_with_version }}) Installation Initialized facts [Recap]
+- name: "({{ ansible_distribution }}) DOCKER::Initialize -  Installation Initialized facts [Recap]"
   debug:
    msg:
     - "OS System                    : {{ uname }}"
