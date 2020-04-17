@@ -23,7 +23,7 @@ docker_compose_url: "{{ 'https://github.com/docker/compose/releases/download/'\
 docker_compose_checksum: "sha256:cfb3439956216b1248308141f7193776fcf4b9c9b49cbbe2fb07885678e2bb8a"
 
 # Default docker datadir
-docker_default_data_dir: "/val/lib/docker"
+docker_default_data_dir: "/var/lib/docker"
 
 # Docker data directory
 docker_data_dir: "{{ docker_default_data_dir }}"
