@@ -1,16 +1,16 @@
 ---
 
-- name: ({{ os_with_version }}) Role Installs Compose for Community Edition
+- name: "({{ ansible_distribution }}) DOCKER::Compose - Role Installs Compose for Community Edition"
   block:
 
-   - name: ({{ os_with_version }}) Download and Install Compose script file
+   - name: "({{ ansible_distribution }}) DOCKER::Compose - Download and Install Compose script file"
      get_url:
       url: "{{ docker_compose_url }}"
       dest: "/usr/local/bin/docker-compose"
       checksum: "{{ docker_compose_checksum }}"
       mode: u=rwx,g=rx,o=rx
 
-   - name: ({{ os_with_version }}) Create Symlink on Compose Script
+   - name: "({{ ansible_distribution }}) DOCKER::Compose - Create Symlink on Compose Script"
      file:
       src: "/usr/local/bin/docker-compose"
       dest: "/usr/bin/docker-compose"

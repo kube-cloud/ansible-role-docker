@@ -23,7 +23,7 @@ docker_compose_url: "{{ 'https://github.com/docker/compose/releases/download/'\
 docker_compose_checksum: "sha256:cfb3439956216b1248308141f7193776fcf4b9c9b49cbbe2fb07885678e2bb8a"
 
 # Default docker datadir
-docker_default_data_dir: "/val/lib/docker"
+docker_default_data_dir: "/var/lib/docker"
 
 # Docker data directory
 docker_data_dir: "{{ docker_default_data_dir }}"
@@ -65,58 +65,6 @@ docker_post_install_script: ""
 
 # Docker post script parameters
 docker_post_install_script_parameters: []
-# - "param1"
-# - "param2"
-# - "..."
-
-# Is docker swarm enabled ?
-docker_swarm_enabled: false
-
-# Is host docker swarm master ?
-docker_swarm_master: false
-
-# Docker swarm master join token
-docker_swarm_master_join_token: ""
-
-# Docker swarm master advertise IP
-docker_swarm_advertise_ip: "127.0.0.1"
-
-# Docker swarm master advertise port
-docker_swarm_advertise_port: 2377
-
-# Docker swarm worker join token
-docker_swarm_worker_join_token: ""
-
-# Docker swarm extra options
-docker_swarm_extras_options: []
-# - "--availability active"
-# - "--max-snapshots 2"
-# - "--snapshot-interval 10000"
-# - "--task-history-limit 5"
-# - "--force-new-cluster"
-# - "--dispatcher-heartbeat 10s"
-# - "--default-addr-pool 10.20.0.0/16"
-# - "--default-addr-pool-mask-length 16"
-# - "--autolock"
-# - "--data-path-addr 127.0.0.1"
-# - "--data-path-port 4789"
-# - "--cert-expiry 2160h0m0s"
-# - "..."
-
-# Install Portainer service stack
-docker_swarm_portainer_enabled: true
-
-# Portainer agent port
-docker_swarm_portainer_agent_port: 9001
-
-# Portainer agent port
-docker_swarm_portainer_port: 9000
-
-# Docker swarm post install script
-docker_swarm_post_install_script: ""
-
-# Docker swarm post script parameters
-docker_swarm_post_install_script_parameters: []
 # - "param1"
 # - "param2"
 # - "..."
